@@ -1,5 +1,6 @@
 import express from "express";
 import { registerUser, loginUser, getCurrentUser } from "../controllers/userController.js"; 
+import { protect } from "../middleware/authMiddleware.js";
 
 const userRouter = express.Router()
 
@@ -7,6 +8,6 @@ userRouter.post('/', registerUser)
 
 userRouter.post('/login', loginUser)
 
-userRouter.get('/current', getCurrentUser)
+userRouter.get('/current', protect, getCurrentUser)
 
 export { userRouter }
