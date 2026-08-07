@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false}))
 app.use('/api/tasks', taskRouter)
 app.use('/api/users', userRouter)
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

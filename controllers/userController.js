@@ -23,7 +23,7 @@ const registerUser = asyncHandler( async(req, res) => {
     const user = await User.create({ name, email, password: hashedPassword })
 
     if(user){
-        res.status(200).json({ _id: user.id, name: user.name, email: user.email })
+        res.status(200).json({ _id: user.id, name: user.name, email: user.email, token: generateJWTtoken(user._id) })
     } else{
         res.status(400)
         throw new Error('Invalid user data')
@@ -31,11 +31,27 @@ const registerUser = asyncHandler( async(req, res) => {
 })
 
 const loginUser = asyncHandler( async(req, res) => {
-    res.json({ message: 'Logged in User successfully'})
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
+
+    if(!user){
+        res.status(400)
+        throw new Error("No user exists, please sign up")
+    }
+
+    if(user && (await bcrypt.compare(password, user.password))){
+        res.json({ _id: user.id, name: user.name, email: user.email, token: generateJWTtoken(user._id) })
+    } else {
+        res.status(400)
+        throw new Error("Invalid Data")
+    }
 })
 
 const getCurrentUser = asyncHandler( async(req, res) => {
+    
     res.json({ message: 'Current user data'})
 })
+
+const generateJWTtoken = id => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d'});
 
 export { registerUser, loginUser, getCurrentUser }
