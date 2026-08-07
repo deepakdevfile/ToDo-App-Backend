@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv/config';
 import {router} from './routes/taskRoutes.js';
 import {errorHandler} from './middleware/errorMiddleware.js';
+import { connectDB } from './connect/database.js';
+
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 5000;
