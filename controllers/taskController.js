@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import { Task } from "../models/taskModel.js";
+import { User } from "../models/userModel.js";
 
 const getTasks = asyncHandler(async(req, res) => {
     const tasks = await Task.find({ user: req.user.id });
@@ -24,6 +25,18 @@ const updateTasks = asyncHandler(async(req, res) => {
         throw new Error('Task not found')
     }
 
+    const user = await User.findById(req.user.id)
+
+    if(!user){
+        res.status(401)
+        throw new Error('No such user found')
+    }
+
+    if(task.user.toString() !== user.id){
+        res.status(401)
+        throw new Error('User is not authorized to update')
+    }
+
     const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {returnDocument: 'after'})
     res.status(200).json(updatedTask);
 })
@@ -34,6 +47,18 @@ const deleteTasks = asyncHandler( async(req, res) => {
     if(!task){
         res.status(400)
         throw new Error('Task not found')
+    }
+
+    const user = await User.findById(req.user.id)
+
+    if(!user){
+        res.status(401)
+        throw new Error('No such user found')
+    }
+
+    if(task.user.toString() !== user.id){
+        res.status(401)
+        throw new Error('User is not authorized to delete')
     }
 
     await Task.findByIdAndDelete(req.params.id)
