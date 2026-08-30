@@ -4,11 +4,16 @@ import { taskRouter } from './routes/taskRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './connect/database.js';
+import cors from 'cors'
 
 connectDB()
 
 const app = express()
 const port = process.env.PORT || 5000
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
