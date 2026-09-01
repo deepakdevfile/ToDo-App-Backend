@@ -25,14 +25,7 @@ const updateTasks = asyncHandler(async(req, res) => {
         throw new Error('Task not found')
     }
 
-    const user = await User.findById(req.user.id)
-
-    if(!user){
-        res.status(401)
-        throw new Error('No such user found')
-    }
-
-    if(task.user.toString() !== user.id){
+    if(task.user.toString() !== req.user.id){
         res.status(401)
         throw new Error('User is not authorized to update')
     }
@@ -49,14 +42,7 @@ const deleteTasks = asyncHandler( async(req, res) => {
         throw new Error('Task not found')
     }
 
-    const user = await User.findById(req.user.id)
-
-    if(!user){
-        res.status(401)
-        throw new Error('No such user found')
-    }
-
-    if(task.user.toString() !== user.id){
+    if(task.user.toString() !== req.user.id){
         res.status(401)
         throw new Error('User is not authorized to delete')
     }

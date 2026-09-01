@@ -13,8 +13,8 @@ const registerUser = asyncHandler( async(req, res) => {
     const userExits = await User.findOne({ email })
 
     if(userExits){
-        res.status(400).redirect('/login')
-        throw new Error("User Exits")
+        res.status(400)
+        throw new Error("User already Exists")
     }
 
     const salt = await bcrypt.genSalt(10)
@@ -48,8 +48,11 @@ const loginUser = asyncHandler( async(req, res) => {
 })
 
 const getCurrentUser = asyncHandler( async(req, res) => {
-    const { _id, name, email } = await User.findById(req.user.id)
-    res.status(200).json({ id: _id, name, email })
+    res.status(200).json({ 
+        id: req.user._id, 
+        name: req.user.name, 
+        email: req.user.email
+    })
 })
 
 const generateJWTtoken = id => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d'});
