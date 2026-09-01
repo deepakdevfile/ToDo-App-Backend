@@ -5,6 +5,7 @@ import { userRouter } from './routes/userRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { connectDB } from './connect/database.js';
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
 
 connectDB()
 
@@ -18,6 +19,7 @@ app.use(cors({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
+app.use(cookieParser())
 
 app.use('/api/tasks', taskRouter)
 app.use('/api/users', userRouter)
